@@ -2,12 +2,20 @@ import React, { useState } from "react";
 import CodeInput from "./CodeInput";
 import MessageDisplay from "./MessageDisplay";
 import NumberButtons from "./NumberButtons";
+import LockerSelect from "./LockerSelect";
+import Axios from 'axios'
 
-const  CodePanel= () => {
+const  MainPanel= () => {
   const [inputValue, setInputValue] = useState("");
   const [message, setMessage] = useState("");
   const [doneText, setDoneText] = useState("");
-  const code = "1234";
+  const [selectedLocker, setSelectedLocker] = useState(null);
+
+
+  const handleLockerSelect = (event) => {
+    setSelectedLocker (event.target.value);
+     
+   };
 
   const handleButtonClick = (num) => {
     setInputValue((prevValue) => prevValue + num);
@@ -20,26 +28,64 @@ const  CodePanel= () => {
   };
 
   const handleSubmit = () => {
-    if (inputValue === code) {
-      setMessage("cabinet is opened");
-      setDoneText("complete");
-    } else {
-      setMessage("please enter correct code");
-    }
-  };
+    if(!selectedLocker){
+      setMessage('please select Locker first');
+    }else {
 
-  const handleComplete = () => {
-    setMessage("thank you for using");
-    setDoneText("completed");
+
+    Axios.post("http://localhost:3002/cabinets", { code: inputValue })
+      .then((response) => {
+        if (response.data.length > 0 && response.data[0].status==='occupied') {
+          // Assuming response.data is an array of matching cabinets
+          const cabinetNumber = response.data[0].number;
+          setMessage(`Door ${cabinetNumber} open for pickup`);
+          setDoneText("Close cabinet door");
+        } else if(response.data.length > 0 && response.data[0].status==='reserved' ){
+          const cabinetNumber = response.data[0].number;
+          setMessage(`Door ${cabinetNumber} open for delivery`);
+          setDoneText("Close cabinet door");
+        } else{
+          setMessage("Please enter correct code");
+        }
+      })
+      .catch((error) => {
+        console.error("Error during POST request:", error);
+        setMessage("An error occurred. Please try again.");
+      });
+  }};
+  
+
+ 
+  const updateCabinetsStatus = () => {
+    Axios.put('http://localhost:3002/update', { code: inputValue })
+      .then(response => {
+        // Check if the response status is 200 (OK)
+        if (response.status === 200) {
+          // If the update was successful, set a message
+          setMessage('Thank you for using');
+          setDoneText('Completed');
+        } else {
+          // If the response status is not 200, throw an error
+          throw new Error('Failed to update status');
+        }
+      })
+      .catch(error => {
+        // If there's an error during the request, log the error
+        console.error('Error updating status:', error);
+        // Handle the error appropriately (e.g., show a message to the user)
+      });
   };
+  
+  
 
   return (
     <div className="App">
+  <LockerSelect selectedLocker={selectedLocker} handleLockerSelect={handleLockerSelect} />
       <CodeInput value={inputValue} />
       <MessageDisplay
         message={message}
         doneText={doneText}
-        handleComplete={handleComplete}
+        handleComplete={updateCabinetsStatus}
       />
       <NumberButtons
         handleButtonClick={handleButtonClick}
@@ -47,7 +93,7 @@ const  CodePanel= () => {
         handleSubmit={handleSubmit}
       />
     </div>
-  );
-};
+  )};
 
-export default CodePanel;
+
+export default MainPanel;

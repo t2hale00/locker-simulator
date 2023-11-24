@@ -60,6 +60,9 @@ button[type="submit"]:hover {
   background-color: #27ae60;
 }
 
+.completebutton {
+  width: calc(60%); 
+}
 
 .LockerSelect {
   max-width: 400px;
