@@ -35,7 +35,7 @@ app.post('/cabinets',(req,res)=>{
 app.put('/update',(req,res)=>{
     const {code}=req.body
     db.query(
-        "update cabinets set status=Case when status='reserved' then'occupied'when status='occupied' then 'available' else status end",[code],
+        "update cabinets set status=Case when status='reserved' then'occupied'when status='occupied' then 'available' else status end where code=?",[code],
         (err,result)=>{
             if(err){
                 console.log(err);
@@ -47,7 +47,6 @@ app.put('/update',(req,res)=>{
         }
     )
 })
-
 
 
 app.listen(3002,()=>{
