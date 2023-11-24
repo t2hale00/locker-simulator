@@ -35,13 +35,13 @@ app.post('/cabinets',(req,res)=>{
 app.put('/update',(req,res)=>{
     const {code}=req.body
     db.query(
-        "update cabinets set status=Case when status='reserved' then'occupied'when status='occupied' then 'available' else status end where code=?",[code],
+        "update cabinets set status=Case when status='reserved' then'occupied'when status='occupied' then 'available' else status end,code=NULL where code=?",[code],
         (err,result)=>{
             if(err){
                 console.log(err);
                 res.status(500).send('Internal Server Error');
             }else{
-                res.send('status changed')
+                res.send('status changed,code invalidated')
                 console.log('status changed')
             }
         }
