@@ -1,13 +1,5 @@
-import React, { useState } from 'react';
 
-
- function LockerSelect() {
-  const [selectedLocker, setSelectedLocker] = useState(null);
-
-  const handleLockerSelect = (event) => {
-   setSelectedLocker (event.target.value);
-    
-  };
+function LockerSelect({ selectedLocker, handleLockerSelect }) {
 
   return (
     <div >
@@ -31,3 +23,4 @@ import React, { useState } from 'react';
 }
 
 export default LockerSelect;
+
