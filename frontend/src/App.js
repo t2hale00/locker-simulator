@@ -1,15 +1,17 @@
 
 import './App.css';
-import  CodePanel from './components/CodePanel';
+import  MainPanel from './components/MainPanel';
+// import LockerSelect from './components/LockerSelect';
+
 
 
 function App() {
   return (
     <div className="App">
       <h1>Parcel touchscreen simulator</h1>
-    
-     <CodePanel/>
-     
+      {/* <LockerSelect/> */}
+     <MainPanel/>
+      
     </div>
   );
 }

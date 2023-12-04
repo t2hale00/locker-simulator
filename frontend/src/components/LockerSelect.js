@@ -24,4 +24,3 @@ function LockerSelect({ selectedLocker, handleLockerSelect }) {
 
 export default LockerSelect;
 
-
