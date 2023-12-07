@@ -13,7 +13,7 @@ const db = mysql.createConnection({
   user: "root",
   host: "localhost",
   password: "root",
-  database: "driverdb",
+  database: "consumerdbtest",
 });
 
 app.post("/cabinets", (req, res) => {
@@ -36,12 +36,12 @@ app.post("/cabinets", (req, res) => {
 app.put("/update", (req, res) => {
   const { code } = req.body;
   db.query(
-    "update parcels as p " +
-      "join cabinets as c on c.code = p.reservationcode " +
-      "set p.status = case when p.status = 'tosend' then 'todelivery' when p.status = 'topickup' then 'done' else p.status end, " +
-      "p.iscodevalid = false, " +
-      "c.cabinetstatus = case when c.cabinetstatus = 'tosend' then 'todelivery' when c.cabinetstatus = 'topickup' then 'available' else c.cabinetstatus end " +
-      "where p.reservationcode = ?",
+    "update parcel as p " +
+      "join cabinets as c on c.code = p.reservationCode " +
+      "set p.status = case when p.status = 'Parcel Not Delivered' then 'Parcel In Locker' when p.status = 'Parcel Ready for Pickup' then 'Parcel Received' else p.status end, " +
+      "p.isCodeValid = false, " +
+      "c.cabinetstatus = case when c.cabinetstatus = 'Reserved' then 'Occupied' when c.cabinetstatus = 'Delivered' then 'available' else c.cabinetstatus end " +
+      "where p.reservationCode = ?",
     [code],
     (err, result) => {
       if (err) {

@@ -35,16 +35,16 @@ const  MainPanel= () => {
       .then((response) => {
         if (response.data.length > 0) {
           const cabinet = response.data[0];
-    
-          if (selectedLocker !== cabinet.location) {
+          const selectedLockerAsNumber = parseInt(selectedLocker, 10); 
+          if (selectedLockerAsNumber !== cabinet.Locationid) {
             setMessage('You are at the incorrect locker');
           } else {
-            if (cabinet.cabinetstatus === 'topickup') {
-              const cabinetNumber = cabinet.number;
+            if (cabinet.cabinetstatus === 'Delivered') {
+              const cabinetNumber = cabinet.CabinetNumber;
               setMessage(`Door ${cabinetNumber} open for pickup`);
               setDoneText("Close cabinet door");
-            } else if (cabinet.cabinetstatus === 'tosend') {
-              const cabinetNumber = cabinet.number;
+            } else if (cabinet.cabinetstatus === 'Reserved') {
+              const cabinetNumber = cabinet.CabinetNumber;
               setMessage(`Door ${cabinetNumber} open for delivery`);
               setDoneText("Close cabinet door");
             } else {
@@ -64,7 +64,7 @@ const  MainPanel= () => {
   
 
  
-  const updateCabinetsStatus = () => {
+  const handlepickanddelivery = () => {
     Axios.put('http://localhost:3002/update', { code: inputValue })
       .then(response => {
         // Check if the response status is 200 (OK)
@@ -94,7 +94,7 @@ const  MainPanel= () => {
       <MessageDisplay
         message={message}
         doneText={doneText}
-        handleComplete={updateCabinetsStatus}
+        handleComplete={handlepickanddelivery}
       />
       <NumberButtons
         handleButtonClick={handleButtonClick}
