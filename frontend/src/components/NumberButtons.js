@@ -13,9 +13,9 @@ const NumberButtons = ({ handleButtonClick, handleClear, handleSubmit }) => {
       <button onClick={() => handleButtonClick("8")}>8</button>
       <button onClick={() => handleButtonClick("9")}>9</button>
       <button onClick={() => handleButtonClick("0")}>0</button>
-      <button onClick={handleClear}>clear</button>
+      <button onClick={handleClear}>Clear</button>
       <button type="submit" onClick={handleSubmit}>
-        ok
+        OK
       </button>
     </div>
   );

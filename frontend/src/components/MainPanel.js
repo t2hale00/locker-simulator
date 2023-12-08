@@ -11,10 +11,8 @@ const  MainPanel= () => {
   const [doneText, setDoneText] = useState("");
   const [selectedLocker, setSelectedLocker] = useState(null);
 
-
   const handleLockerSelect = (event) => {
     setSelectedLocker (event.target.value);
-     
    };
 
   const handleButtonClick = (num) => {
@@ -28,39 +26,48 @@ const  MainPanel= () => {
   };
 
   const handleSubmit = () => {
-    if(!selectedLocker){
-      setMessage('please select Locker first');
-    }else {
-      Axios.post("http://localhost:3002/cabinets", { code: inputValue })
-      .then((response) => {
-        if (response.data.length > 0) {
-          const cabinet = response.data[0];
-    
-          if (selectedLocker !== cabinet.location) {
-            setMessage('You are at the incorrect locker');
-          } else {
-            if (cabinet.cabinetstatus === 'topickup') {
-              const cabinetNumber = cabinet.number;
-              setMessage(`Door ${cabinetNumber} open for pickup`);
-              setDoneText("Close cabinet door");
-            } else if (cabinet.cabinetstatus === 'tosend') {
-              const cabinetNumber = cabinet.number;
-              setMessage(`Door ${cabinetNumber} open for delivery`);
-              setDoneText("Close cabinet door");
+    if (!selectedLocker) {
+      setMessage('Please select Locker first');
+    } else {
+      Axios.get(`http://localhost:3002/cabinets?Code=${inputValue}`)
+        .then((response) => {
+          if (response.data.length > 0) {
+            const cabinet = response.data[0];
+  
+            // Log relevant information for debugging
+            console.log('selectedLocker:', selectedLocker);
+            console.log('cabinet.CabinetNumber:', cabinet.CabinetNumber);
+            console.log('cabinet.cabinetstatus:', cabinet.cabinetstatus);
+  
+            // Assuming cabinet.CabinetNumber is the relevant property to compare
+            // Convert both values to strings for strict comparison
+            if (String(selectedLocker) !== String(cabinet.CabinetNumber)) {
+              setMessage('You are at the incorrect locker');
             } else {
-              setMessage("Please enter correct code");
+              if (cabinet.cabinetstatus === 'topickup') {
+                const cabinetNumber = cabinet.CabinetNumber; // Update to the relevant property
+                setMessage(`Door ${cabinetNumber} open for pickup`);
+                setDoneText("Close cabinet door");
+              } else if (cabinet.cabinetstatus === 'tosend') {
+                const cabinetNumber = cabinet.CabinetNumber; // Update to the relevant property
+                setMessage(`Door ${cabinetNumber} open for delivery`);
+                setDoneText("Close cabinet door");
+              } else {
+                setMessage("Invalid cabinet status. Please try again.");
+              }
             }
+          } else {
+            setMessage("Please enter correct code");
           }
-        } else {
-          setMessage("Please enter correct code");
-        }
-      })
-      .catch((error) => {
-        console.error("Error during POST request:", error);
-        setMessage("An error occurred. Please try again.");
-      });
-    
-    }};
+        })
+        .catch((error) => {
+          console.error("Error during GET request:", error);
+          setMessage("An error occurred. Please try again.");
+        });
+    }
+  };
+  
+  
   
 
  
@@ -83,13 +90,10 @@ const  MainPanel= () => {
         // Handle the error appropriately (e.g., show a message to the user)
       });
   };
-  
-  
-  
 
   return (
     <div className="App">
-  <LockerSelect selectedLocker={selectedLocker} handleLockerSelect={handleLockerSelect} />
+      <LockerSelect selectedLocker={selectedLocker} handleLockerSelect={handleLockerSelect} />
       <CodeInput value={inputValue} />
       <MessageDisplay
         message={message}

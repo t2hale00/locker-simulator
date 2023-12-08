@@ -30,12 +30,13 @@ app.get('/locations', (req, res) => {
   });
 });
 
-app.post("/cabinets", (req, res) => {
-  const { Code } = req.body;
+// API endpoint to open Cabinet using Code
+app.get("/cabinets", (req, res) => {
+  const { Code } = req.query;  // Use req.query instead of req.body
   db.query(
     "select * from cabinets where Code=? ",
     
-    [code],
+    [Code],
     (err, result) => {
       if (err) {
         console.log(err);
@@ -46,6 +47,8 @@ app.post("/cabinets", (req, res) => {
     }
   );
 });
+
+
 
 app.put("/update", (req, res) => {
   const { Code } = req.body;
