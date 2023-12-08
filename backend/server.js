@@ -36,13 +36,8 @@ app.post("/cabinets", (req, res) => {
 app.put("/update", (req, res) => {
   const { code } = req.body;
   db.query(
-    "update parcel as p " +
-      "join cabinets as c on c.code = p.reservationCode " +
-      "set p.status = case when p.status = 'Parcel Not Delivered' then 'Parcel In Locker' when p.status = 'Parcel Ready for Pickup' then 'Parcel Received' else p.status end, " +
-      "p.isCodeValid = false, " +
-      "c.cabinetstatus = case when c.cabinetstatus = 'Reserved' then 'Occupied' when c.cabinetstatus = 'Delivered' then 'available' else c.cabinetstatus end " +
-      "where p.reservationCode = ?",
-    [code],
+    "UPDATE parcel AS p JOIN cabinets AS c ON c.Code = p.reservationCode OR c.Code = p.pickupCode SET  p.status = CASE  WHEN p.status = 'Parcel Not Delivered' THEN 'Parcel In Locker' WHEN p.status = 'Parcel Ready For Pickup' THEN 'Parcel Received'   ELSE p.status END,  p.isCodeValid = false, c.cabinetstatus = CASE     WHEN c.cabinetstatus = 'Reserved' THEN 'Occupied'  WHEN c.cabinetstatus = 'Delivered' THEN 'Available'  ELSE c.cabinetstatus END  WHERE p.reservationCode = ? OR p.PickupCode = ?; ", [code,code],
+
     (err, result) => {
       if (err) {
         console.log(err);
