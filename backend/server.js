@@ -54,6 +54,62 @@ app.put("/update", (req, res) => {
   );
 });
 
+
+app.put("/insert", async (req, res) => {
+
+  const { code } = req.body;
+
+// Fetch recipient ID based on recipient name
+  db.query(
+
+    "SELECT recipientname  from parcel where PickupCode = ?",
+    [code],
+    async (getnameErr, getnameResult) => {
+      if (getnameErr) {
+        console.error(recipientErr);
+        res.status(500).send("Internal Server Error");
+        return;
+      }
+      const recipientname = getnameResult[0].recipientname;
+   
+
+db.query(
+ "SELECT userid FROM user WHERE name = ?",
+    [recipientname],
+  (recipientErr,recipientResult)=>{
+    if(recipientErr){
+      console.error(recipientErr);
+      res.status(500).send('internal server error');
+      return
+    }
+
+    const recipientid = recipientResult[0].userid;
+
+
+
+// Fetch recipient ID based on recipient name
+  // Insert notification
+          db.query(
+            ' INSERT INTO notification (type, content, userid, timestamp)  VALUES ("PickedUp", "You have pickep parcel with pickup code ?", ?, NOW()); ',
+            [code,recipientid],
+            (notificationErr, notificationResult) => {
+              if (notificationErr) {
+                console.error(notificationErr);
+                res.status(500).send("Internal Server Error");
+
+              } else {
+                res.send(`recipient ${recipientid} got notification.`);
+                console.log(`inserted notification for picked up`);
+              }
+
+  }
+)
+})
+})
+})
+
+
+
 app.listen(3002, () => {
   console.log("server for simulator is running on port 3002");
   db.connect(function (err) {
