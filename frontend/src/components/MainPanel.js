@@ -61,7 +61,11 @@ const MainPanel = () => {
   };
 
   const handlepickanddelivery = () => {
-    Axios.put("http://localhost:3002/update", { code: inputValue })
+    Axios.post("http://localhost:3002/cabinets", { code: inputValue })
+ .then((response)=>{
+     const cabinet = response.data[0];
+  if (cabinet.cabinetstatus === "Reserved") {
+  Axios.put("http://localhost:3002/updateForDelivery", { code: inputValue })
       .then((response) => {
         // Check if the response status is 200 (OK)
         if (response.status === 200) {
@@ -69,6 +73,9 @@ const MainPanel = () => {
           setMessage("Thank you for using,enter other code to delivery/pickup");
           setDoneText("Completed");
           setInputValue("");
+          setTimeout(() => {
+            window.location.reload();
+          }, 5000);
         } else {
           // If the response status is not 200, throw an error
           throw new Error("Failed to update status");
@@ -79,16 +86,34 @@ const MainPanel = () => {
         console.error("Error updating status:", error);
         // Handle the error appropriately (e.g., show a message to the user)
       });
-
-    Axios.put("http://localhost:3002/insert", {
-      code: inputValue,
-    })
+  }else if(cabinet.cabinetstatus === "Delivered") {
+    Axios.put("http://localhost:3002/updateForPickup", { code: inputValue })
       .then((response) => {
-        console.log("inserted notification");
+     
+        // Check if the response status is 200 (OK)
+        if (response.status === 200) {
+          // If the update was successful, set a message
+          setMessage("Thank you for using,enter other code to delivery/pickup");
+          setDoneText("Completed");
+          setInputValue("");
+          setTimeout(() => {
+            window.location.reload();
+          }, 5000);
+        } else {
+          // If the response status is not 200, throw an error
+          throw new Error("Failed to update status");
+        }
       })
-      .catch((err) => {
-        console.log("error fetching insert notification for delivery:", err);
+      .catch((error) => {
+        // If there's an error during the request, log the error
+        console.error("Error updating status:", error);
+        // Handle the error appropriately (e.g., show a message to the user)
       });
+  }
+
+
+ })
+
   };
 
   return (
