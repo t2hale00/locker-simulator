@@ -71,7 +71,7 @@ const MainPanel = () => {
         if (response.status === 200) {
           // If the update was successful, set a message
           setMessage("Thank you for using Parcel. Please enter other code for parcel delivery/pickup.");
-          setDoneText("Completed");
+          setDoneText("Completed. Redirecting to main screen...");
           setInputValue("");
           setTimeout(() => {
             window.location.reload();
