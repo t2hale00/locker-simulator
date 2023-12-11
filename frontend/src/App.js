@@ -8,7 +8,7 @@ import  MainPanel from './components/MainPanel';
 function App() {
   return (
     <div className="App">
-      <h1>Parcel touchscreen simulator</h1>
+      <h1>Parcel Touchscreen Simulator</h1>
       {/* <LockerSelect/> */}
      <MainPanel/>
       

@@ -27,7 +27,7 @@ const MainPanel = () => {
 
   const handleSubmit = () => {
     if (!selectedLocker) {
-      setMessage("please select Locker first");
+      setMessage("Please select Locker first");
     } else {
       Axios.post("http://localhost:3002/cabinets", { code: inputValue })
         .then((response) => {
@@ -70,7 +70,7 @@ const MainPanel = () => {
         // Check if the response status is 200 (OK)
         if (response.status === 200) {
           // If the update was successful, set a message
-          setMessage("Thank you for using,enter other code to delivery/pickup");
+          setMessage("Thank you for using Parcel. Please enter other code for parcel delivery/pickup.");
           setDoneText("Completed");
           setInputValue("");
           setTimeout(() => {
