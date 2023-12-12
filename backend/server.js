@@ -10,10 +10,10 @@ app.use(express.json());
 app.use(bodyParser.json());
 
 const db = mysql.createConnection({
-  user: "root",
-  host: "localhost",
-  password: "LEAHmae185!!!",
-  database: "consumerdb",
+  host: process.env.DB_HOST || "localhost",
+      user: process.env.DB_USER || "team12user",
+      password: process.env.DB_PASSWORD || "awateam12",
+      database: process.env.DB_NAME || "consumerdb",
 });
 
 app.post("/cabinets", (req, res) => {
