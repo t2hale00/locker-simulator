@@ -29,7 +29,7 @@ const MainPanel = () => {
     if (!selectedLocker) {
       setMessage("Please select Locker first");
     } else {
-      Axios.post("http://localhost:3002/cabinets", { code: inputValue })
+      Axios.post("http://localhost:5000/cabinets", { code: inputValue })
         .then((response) => {
           if (response.data.length > 0) {
             const cabinet = response.data[0];
@@ -61,11 +61,11 @@ const MainPanel = () => {
   };
 
   const handlepickanddelivery = () => {
-    Axios.post("http://localhost:3002/cabinets", { code: inputValue })
+    Axios.post("http://localhost:5000/cabinets", { code: inputValue })
  .then((response)=>{
      const cabinet = response.data[0];
   if (cabinet.cabinetstatus === "Reserved") {
-  Axios.put("http://localhost:3002/updateForDelivery", { code: inputValue })
+  Axios.put("http://localhost:5000/updateForDelivery", { code: inputValue })
       .then((response) => {
         // Check if the response status is 200 (OK)
         if (response.status === 200) {
@@ -87,7 +87,7 @@ const MainPanel = () => {
         // Handle the error appropriately (e.g., show a message to the user)
       });
   }else if(cabinet.cabinetstatus === "Delivered") {
-    Axios.put("http://localhost:3002/updateForPickup", { code: inputValue })
+    Axios.put("http://localhost:5000/updateForPickup", { code: inputValue })
       .then((response) => {
      
         // Check if the response status is 200 (OK)

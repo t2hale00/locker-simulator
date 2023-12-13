@@ -2,6 +2,7 @@ const express = require("express");
 const mysql = require("mysql");
 const cors = require("cors");
 const bodyParser = require("body-parser");
+const port=5000;
 
 const app = express();
 
@@ -10,10 +11,10 @@ app.use(express.json());
 app.use(bodyParser.json());
 
 const db = mysql.createConnection({
-  host: process.env.DB_HOST || "localhost",
-      user: process.env.DB_USER || "team12user",
-      password: process.env.DB_PASSWORD || "awateam12",
-      database: process.env.DB_NAME || "consumerdb",
+  host: "localhost",
+      user:  "root",
+      password:  "root",
+      database: "consumerdb",
 });
 
 app.post("/cabinets", (req, res) => {
@@ -214,8 +215,8 @@ async function insertNotification(type, content, userid) {
 
 
 
-app.listen(3002, () => {
-  console.log("server for simulator is running on port 3002");
+app.listen(port, () => {
+  console.log(`server for simulator is running on port ${port}`);
   db.connect(function (err) {
     if (err) throw err;
     console.log("database connected");
